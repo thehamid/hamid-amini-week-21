@@ -1,6 +1,5 @@
-import React from "react";
 import Button from "./ui/Button";
-import close from "@/assets/Close.png";
+import Image from "next/image";
 
 const DeleteModal = ({ isOpen, onClose, onConfirm, productName, message }) => {
   if (!isOpen) return null;
@@ -13,7 +12,7 @@ const DeleteModal = ({ isOpen, onClose, onConfirm, productName, message }) => {
       <div className="relative top-40 mx-auto p-5 border w-96 shadow-lg rounded-2xl bg-white">
         <div className="mt-3 text-center">
           <div className="mx-auto flex items-center justify-center h-24 w-24 rounded-full">
-            <img src={close} alt="close" />
+            <Image src="/assets/Close.png" width={96} height={96}  alt="close" />
           </div>
           <div className="mt-5 px-7 py-3">
             <p

@@ -19,6 +19,24 @@ const fetchProduct = async (id) => {
 };
 
 
+// تابع برای تولید متادیتای داینامیک
+export async function generateMetadata({ params }) {
+    const { id } = await params;
+
+  const product = await fetchProduct(id);
+    
+    
+    if (!product) {
+        return {
+            title: 'محصول یافت نشد',
+        };
+    }
+
+    return {
+        title:product.name,   
+    };
+}
+
 export default async function ProductDetailPage({ params }) {
   const { id } = await params;
 

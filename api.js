@@ -8,7 +8,7 @@ const api = axios.create({
   },
 });
 
-// 2. افزودن یک request interceptor
+// request interceptor
 api.interceptors.request.use(
   (config) => {
     const token = Cookies.get("token");

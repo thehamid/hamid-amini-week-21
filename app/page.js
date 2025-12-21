@@ -1,8 +1,23 @@
-import { HomePage } from "@/components/HomePage";
+import {HomePage}  from "@/components/HomePage";
 import { Navbar } from "@/components/Navbar";
 import { LucideShoppingCart } from "lucide-react";
+import api from '@/api';
 
-export default function Home() {
+const fetchProduct = async () => {
+    try {
+        const { data } = await api.get(`/products`);
+        return data;
+    } catch (error) {
+        console.error("Failed to fetch list data:", error);
+        return null;
+    }
+};
+
+
+export default async function Home() {
+
+  const { data: initialProducts } = await fetchProduct();
+
   return (
     <div>
       <Navbar />
@@ -11,7 +26,7 @@ export default function Home() {
         بوتوشاپ خوش آمدید
       </h1>
 
-      <HomePage />
+      <HomePage initialProducts={initialProducts} />
     </div>
   );
 }

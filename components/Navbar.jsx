@@ -8,9 +8,9 @@ export const Navbar = () => {
 
   return (
     <div className="w-full bg-gray-200">
-      <div className="container mx-auhref flex justify-between items-center p-4">
-        <div className="logo not-last-of-type:">
-          <Image src="/assets/logo.png" alt="bohrefshop" width={50} height={50} />
+      <div className="container mx-auto flex justify-between items-center p-4">
+        <div className="logo">
+          <Image src="/assets/logo.png" alt="logo" width={50} height={50} />
         </div>
         {isAuthenticated ? (
           <div className="flex gap-4">
@@ -26,12 +26,12 @@ export const Navbar = () => {
             >
               داشبورد
             </Link>
-            <buthrefn
+            <button
               onClick={logout}
-              className="text-gray-600 hover:text-primary color-transition"
+              className="text-gray-600 hover:text-primary color-transition cursor-pointer"
             >
               خروج
-            </buthrefn>
+            </button>
           </div>
         ) : (
           <div className="flex gap-4">

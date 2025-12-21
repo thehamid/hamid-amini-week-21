@@ -1,25 +1,36 @@
+'use client'
 import React, { useState, useEffect, useMemo } from "react";
-import ProductModal from "../components/ProductModal";
-import DeleteModal from "../components/DeleteModal";
-import Button from "../components/ui/Button";
+import ProductModal from "@/components/ProductModal";
+import DeleteModal from "@/components/DeleteModal";
+import Button from "@/components/ui/Button";
 import {
   LucideSearch,
   LucideCombine,
   LucidePenBox,
   LucideTrash,
 } from "lucide-react";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 import {
   useProducts,
   useAddProduct,
   useUpdateProduct,
   useDeleteProduct,
   useBulkDeleteProducts,
-} from "../hooks/useProducts";
-import Loading from "../components/ui/Loading";
+} from "@/hooks/useProducts";
+import Loading from "@/components/ui/Loading";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 const ProductListPage = () => {
-  const { user, logout } = useAuth();
+  const {isAuthenticated ,user, logout } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+  if (!isAuthenticated) {
+    router.push("/login");
+  }
+}, []);
+
 
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
@@ -90,7 +101,7 @@ const ProductListPage = () => {
   };
 
   const handleDeleteConfirm = () => {
-    deleteProductMutation.mutate(deletingProduct.id);
+    deleteProductMutation.mutate(deletingProduct?.id);
   };
 
   const handleBulkDelete = () => {
@@ -135,6 +146,7 @@ const ProductListPage = () => {
 
   const handleLogout = () => {
     logout();
+    router.push("/login");
   };
 
   if (isLoading)
@@ -169,10 +181,12 @@ const ProductListPage = () => {
 
           <div className="relative group">
             <div className="flex items-center space-x-5 cursor-pointer">
-              <img
+              <Image
                 className="h-12 w-12 rounded-full"
                 src={user.avatar}
                 alt="User Avatar"
+                width={48}
+                height={48}
               />
               <div className="flex flex-col justify-start items-start">
                 <span className="text-gray-700 text-lg">{user.name}</span>
@@ -246,7 +260,7 @@ const ProductListPage = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {filteredProducts.length > 0 ? (
+              {filteredProducts.length > 0 && isAuthenticated ? (
                 filteredProducts.map((product) => (
                   <tr key={product.id}>
                     <td className="px-6 py-4">

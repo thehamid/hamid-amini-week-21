@@ -1,17 +1,11 @@
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { productSchema } from "../schemas/productSchemas";
+import { productSchema } from "@/schemas/productSchemas";
 import Input from "./ui/Input";
 import Button from "./ui/Button";
 
-const ProductModal = ({
-  isOpen,
-  onClose,
-  onSubmit,
-  initialData,
-  isLoading,
-}) => {
+const ProductModal = ({ isOpen, onClose, onSubmit, initialData, isLoading,}) => {
   const {
     register,
     handleSubmit,
@@ -30,6 +24,7 @@ const ProductModal = ({
 
   const onFormSubmit = (data) => {
     onSubmit(data);
+    reset(initialData || { name: "", price: "", quantity: "" });
   };
 
   return (
