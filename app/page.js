@@ -16,7 +16,7 @@ const fetchProduct = async () => {
 
 export default async function Home() {
 
-  const { data: initialProducts } = await fetchProduct();
+  const  initialProducts  = await fetchProduct();
 
   return (
     <div>
@@ -26,7 +26,8 @@ export default async function Home() {
         بوتوشاپ خوش آمدید
       </h1>
 
-      <HomePage initialProducts={initialProducts} />
+        {initialProducts && <HomePage initialProducts={initialProducts.data} /> }
+      
     </div>
   );
 }

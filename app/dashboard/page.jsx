@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { useState, useEffect, useMemo } from "react";
 import ProductModal from "@/components/ProductModal";
 import DeleteModal from "@/components/DeleteModal";
@@ -22,15 +22,14 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 const ProductListPage = () => {
-  const {isAuthenticated ,user, logout } = useAuth();
+  const { isAuthenticated, user, logout } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-  if (!isAuthenticated) {
-    router.push("/login");
-  }
-}, []);
-
+    if (!isAuthenticated) {
+      router.push("/login");
+    }
+  }, [isAuthenticated,user]);
 
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
@@ -155,12 +154,6 @@ const ProductListPage = () => {
         <Loading />
       </div>
     );
-  if (error)
-    return (
-      <div className="text-center mt-10 text-red-500">
-        خطا در دریافت اطلاعات
-      </div>
-    );
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -227,92 +220,95 @@ const ProductListPage = () => {
         </div>
 
         {/* جدول محصولات */}
-        <div className="bg-white overflow-hidden sm:rounded-2xl border">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-200">
-              <tr>
-                <th className="px-6 py-3 text-right">
-                  <input
-                    type="checkbox"
-                    checked={
-                      selectedIds.length === filteredProducts.length &&
-                      filteredProducts.length > 0
-                    }
-                    onChange={handleSelectAll}
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                  />
-                </th>
-                <th className="px-4 sm:px-6 lg:px-8 py-5 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  نام کالا
-                </th>
-                <th className="px-4 sm:px-6 lg:px-8 py-5 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  قیمت
-                </th>
-                <th className="px-4 sm:px-6 lg:px-8py-5 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  موجودی
-                </th>
-                <th className="hidden md:table-cell px-4 sm:px-6 lg:px-8py-5 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  شناسه کالا
-                </th>
-                <th className="px-4 sm:px-6 lg:px-8 py-5 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  عملیات
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {filteredProducts.length > 0 && isAuthenticated ? (
-                filteredProducts.map((product) => (
-                  <tr key={product.id}>
-                    <td className="px-6 py-4">
-                      <input
-                        type="checkbox"
-                        checked={selectedIds.includes(product.id)}
-                        onChange={() => handleSelectProduct(product.id)}
-                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                      />
-                    </td>
-                    <td className="px-4 sm:px-6 lg:px-8 py-5 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {product.name}
-                    </td>
-                    <td className="px-4 sm:px-6 lg:px-8 py-5 whitespace-nowrap text-sm text-gray-500">
-                      {product.price}
-                    </td>
-                    <td className="px-4 sm:px-6 lg:px-8 py-5 whitespace-nowrap text-sm text-gray-500">
-                      {product.quantity}
-                    </td>
-                    <td className="hidden md:block px-4 sm:px-6 lg:px-8 py-5 whitespace-nowrap text-sm text-gray-500">
-                      {product.id}
-                    </td>
-                    <td className="px-4 sm:px-6 lg:px-8 py-5 whitespace-nowrap text-sm font-medium">
-                      <button
-                        onClick={() => handleOpenEditModal(product)}
-                        className="text-green-600 hover:text-green-900 ml-3 cursor-pointer"
-                      >
-                        <LucidePenBox />
-                      </button>
-                      <button
-                        onClick={() => handleOpenDeleteModal(product)}
-                        className="text-red-600 hover:text-red-900 cursor-pointer"
-                      >
-                        <LucideTrash />
-                      </button>
+        {error ? (
+         <div className="text-center text-red-400">"خطا! محصولی برای نمایش وجود ندارد"</div> 
+        ) : (
+          <div className="bg-white overflow-hidden sm:rounded-2xl border">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-200">
+                <tr>
+                  <th className="px-6 py-3 text-right">
+                    <input
+                      type="checkbox"
+                      checked={
+                        selectedIds.length === filteredProducts.length &&
+                        filteredProducts.length > 0
+                      }
+                      onChange={handleSelectAll}
+                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                    />
+                  </th>
+                  <th className="px-4 sm:px-6 lg:px-8 py-5 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    نام کالا
+                  </th>
+                  <th className="px-4 sm:px-6 lg:px-8 py-5 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    قیمت
+                  </th>
+                  <th className="px-4 sm:px-6 lg:px-8py-5 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    موجودی
+                  </th>
+                  <th className="hidden md:table-cell px-4 sm:px-6 lg:px-8py-5 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    شناسه کالا
+                  </th>
+                  <th className="px-4 sm:px-6 lg:px-8 py-5 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    عملیات
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {filteredProducts.length > 0 && isAuthenticated ? (
+                  filteredProducts.map((product) => (
+                    <tr key={product.id}>
+                      <td className="px-6 py-4">
+                        <input
+                          type="checkbox"
+                          checked={selectedIds.includes(product.id)}
+                          onChange={() => handleSelectProduct(product.id)}
+                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                        />
+                      </td>
+                      <td className="px-4 sm:px-6 lg:px-8 py-5 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {product.name}
+                      </td>
+                      <td className="px-4 sm:px-6 lg:px-8 py-5 whitespace-nowrap text-sm text-gray-500">
+                        {product.price}
+                      </td>
+                      <td className="px-4 sm:px-6 lg:px-8 py-5 whitespace-nowrap text-sm text-gray-500">
+                        {product.quantity}
+                      </td>
+                      <td className="hidden md:block px-4 sm:px-6 lg:px-8 py-5 whitespace-nowrap text-sm text-gray-500">
+                        {product.id}
+                      </td>
+                      <td className="px-4 sm:px-6 lg:px-8 py-5 whitespace-nowrap text-sm font-medium">
+                        <button
+                          onClick={() => handleOpenEditModal(product)}
+                          className="text-green-600 hover:text-green-900 ml-3 cursor-pointer"
+                        >
+                          <LucidePenBox />
+                        </button>
+                        <button
+                          onClick={() => handleOpenDeleteModal(product)}
+                          className="text-red-600 hover:text-red-900 cursor-pointer"
+                        >
+                          <LucideTrash />
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      colSpan="6"
+                      className="px-4 sm:px-6 lg:px-8 py-5 text-center text-gray-500"
+                    >
+                      محصولی یافت نشد.
                     </td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td
-                    colSpan="6"
-                    className="px-4 sm:px-6 lg:px-8 py-5 text-center text-gray-500"
-                  >
-                    محصولی یافت نشد.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
         {/* صفحه‌بندی */}
         {totalPages > 1 && (
           <div className="flex justify-center items-center space-x-2 mt-6">
