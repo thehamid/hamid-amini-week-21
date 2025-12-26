@@ -22,14 +22,17 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 const ProductListPage = () => {
-  const { isAuthenticated, user, logout } = useAuth();
+  const { isAuthenticated, user, logout, loadAuth } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
+    if (loadAuth) {
+      return;
+    }
     if (!isAuthenticated) {
       router.push("/login");
     }
-  }, [isAuthenticated,user]);
+  }, [loadAuth, isAuthenticated, router]);
 
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
@@ -57,10 +60,9 @@ const ProductListPage = () => {
     const productsArray = Array.isArray(allProducts)
       ? allProducts
       : allProducts?.data || [];
-    const filtered =
-      productsArray.filter((product) =>
-        product.name.toLowerCase().includes(searchTerm.toLowerCase())
-      ) || [];
+    const filtered = productsArray.filter((product) =>
+      product?.name?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     const totalPageCount = Math.ceil(filtered.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -132,10 +134,10 @@ const ProductListPage = () => {
   };
 
   const handleSelectAll = () => {
-    if (selectedIds.length === products.length) {
+    if (selectedIds.length === filteredProducts.length) {
       setSelectedIds([]);
     } else {
-      setSelectedIds(products.map((p) => p.id));
+      setSelectedIds(filteredProducts.map((p) => p?.id).filter(Boolean));
     }
   };
 
@@ -172,30 +174,36 @@ const ProductListPage = () => {
             />
           </div>
 
-          <div className="relative group">
-            <div className="flex items-center space-x-5 cursor-pointer">
-              <Image
-                className="h-12 w-12 rounded-full"
-                src={user.avatar}
-                alt="User Avatar"
-                width={48}
-                height={48}
-              />
-              <div className="flex flex-col justify-start items-start">
-                <span className="text-gray-700 text-lg">{user.name}</span>
-                <span className="text-gray-700 text-sm">{user.role}</span>
+          {user && (
+            <div className="relative group">
+              <div className="flex items-center space-x-5 cursor-pointer">
+                <Image
+                  className="h-12 w-12 rounded-full"
+                  src={user.avatar || "/default-avatar.png"}
+                  alt="User Avatar"
+                  width={48}
+                  height={48}
+                />
+                <div className="flex flex-col justify-start items-start">
+                  <span className="text-gray-700 text-lg">
+                    {user.name || "کاربر"}
+                  </span>
+                  <span className="text-gray-700 text-sm">
+                    {user.role || "نقش"}
+                  </span>
+                </div>
+              </div>
+
+              <div className="absolute top-full mt-2 right-0 bg-white shadow-lg rounded-lg py-2 w-32 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                <button
+                  onClick={() => handleLogout()}
+                  className="w-full text-right px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer"
+                >
+                  خروج
+                </button>
               </div>
             </div>
-
-            <div className="absolute top-full mt-2 right-0 bg-white shadow-lg rounded-lg py-2 w-32 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-              <button
-                onClick={() => handleLogout()}
-                className="w-full text-right px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer"
-              >
-                خروج
-              </button>
-            </div>
-          </div>
+          )}
         </div>
       </header>
 
@@ -221,7 +229,14 @@ const ProductListPage = () => {
 
         {/* جدول محصولات */}
         {error ? (
-         <div className="text-center text-red-400">"خطا! محصولی برای نمایش وجود ندارد"</div> 
+          <div className="flex justify-center ">
+            <div className="text-center text-red-500 bg-red-100 p-4 rounded-lg w-full">
+              <p className="font-bold">خطا در دریافت اطلاعات</p>
+              <p className="text-sm">
+                {error.message || "خطای شبکه رخ داده است."}
+              </p>
+            </div>
+          </div>
         ) : (
           <div className="bg-white overflow-hidden sm:rounded-2xl border">
             <table className="min-w-full divide-y divide-gray-200">
@@ -258,7 +273,7 @@ const ProductListPage = () => {
               <tbody className="bg-white divide-y divide-gray-200">
                 {filteredProducts.length > 0 && isAuthenticated ? (
                   filteredProducts.map((product) => (
-                    <tr key={product.id}>
+                    <tr key={product?.id || Math.random()}>
                       <td className="px-6 py-4">
                         <input
                           type="checkbox"
@@ -268,16 +283,16 @@ const ProductListPage = () => {
                         />
                       </td>
                       <td className="px-4 sm:px-6 lg:px-8 py-5 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {product.name}
+                        {product?.name || "نامشخص"}
                       </td>
                       <td className="px-4 sm:px-6 lg:px-8 py-5 whitespace-nowrap text-sm text-gray-500">
-                        {product.price}
+                        {product?.price || "0"}
                       </td>
                       <td className="px-4 sm:px-6 lg:px-8 py-5 whitespace-nowrap text-sm text-gray-500">
-                        {product.quantity}
+                        {product?.quantity || "0"}
                       </td>
                       <td className="hidden md:block px-4 sm:px-6 lg:px-8 py-5 whitespace-nowrap text-sm text-gray-500">
-                        {product.id}
+                        {product?.id || "نامشخص"}
                       </td>
                       <td className="px-4 sm:px-6 lg:px-8 py-5 whitespace-nowrap text-sm font-medium">
                         <button

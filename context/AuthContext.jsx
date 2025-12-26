@@ -4,16 +4,21 @@ import Cookies from "js-cookie";
 
 const AuthContext = createContext(null);
 
+
+
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [loadAuth, setLoadAuth] = useState(true);
+
+ 
+
 
   useEffect(() => {
     const savedToken = Cookies.get("token");
     if (savedToken) {
       setToken(savedToken);
     }
-    setIsLoading(false);
+    setLoadAuth(false);
   }, []);
 
   const user = {
@@ -38,7 +43,7 @@ export const AuthProvider = ({ children }) => {
     token,
     user,
     isAuthenticated,
-    isLoading,
+    loadAuth,
     login,
     logout,
   };
